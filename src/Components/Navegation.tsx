@@ -1,6 +1,9 @@
 import React from 'react'
+import { useSelector } from 'react-redux';
 
 export default function Navegation() {
+
+    const users = useSelector((state: any) => state.users);
     return (
         <>
             <nav className="flex flex-col md:flex-row justify-between items-start md:items-center space-y-3 space-x-4 gap-12 md:space-y-0 p-4">
@@ -8,7 +11,7 @@ export default function Navegation() {
                     Mostrando
                     <span className="font-semibold text-gray-900 dark:text-white">1-10</span>
                     de
-                    <span className="font-semibold text-gray-900 dark:text-white">1000</span>
+                    <span className="font-semibold text-gray-900 dark:text-white">{users.length == 0 ? '-' : users.length}</span>
                 </span>
                 <div className="inline-flex items-stretch -space-x-px">
                     <button className="flex items-center justify-center h-full py-1.5 px-3 ml-0 text-gray-500 bg-white rounded-l-lg border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">

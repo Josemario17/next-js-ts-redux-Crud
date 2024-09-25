@@ -8,7 +8,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "@/Store/store";
 import { openCreateModal } from "../Store/ModalSlice";
 import Modal from "@/Components/Modal";
-import { ToastContainer, toast } from 'react-toastify';
+import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 export default function Home() {
@@ -16,6 +16,9 @@ export default function Home() {
   const { createModal, editModal, confirmModal } = useSelector(
     (state: RootState) => state.modal
   );
+
+  const users = useSelector((state: any) => state.users);
+
 
   return (
     <>
@@ -26,7 +29,7 @@ export default function Home() {
             <div className="flex-1">
               <h5 className="flex gap-1">
                 <span className="text-gray-500">Usuarios:</span>
-                <span className="dark:text-white">123456</span>
+                <span className="dark:text-white">{users.length == 0 ? "-" : users.length}</span>
               </h5>
             </div>
             <div className="flex-shrink-0 flex flex-col items-start md:flex-row md:items-center lg:justify-end space-y-3 md:space-y-0 md:space-x-3">

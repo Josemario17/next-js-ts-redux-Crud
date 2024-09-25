@@ -6,7 +6,7 @@ import AddButton from './AddButton'
 import { database } from '@/Services/Firebase'
 import { RootState } from '../Store/store' 
 import { toast } from 'react-toastify'
-import Loader from './Loader'
+import LoaderModal from './LoaderModal'
 
 interface FormData {
   name: string
@@ -119,7 +119,7 @@ export default function Form({ SectionName }: { SectionName: string }) {
           {errors.cargo && <p className="text-red-500 text-sm mt-1">{errors.cargo.message}</p>}
         </div>
         {
-            loading ? <Loader></Loader> : <AddButton text={`${SectionName} Usuario`} typeButton="Submit" handleClick={() => { }} />
+            loading ? <LoaderModal></LoaderModal> : <AddButton text={`${SectionName} Usuario`} typeButton="Submit" handleClick={() => { }} />
         }
       </form>
     </>

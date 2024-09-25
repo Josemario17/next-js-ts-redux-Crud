@@ -1,6 +1,6 @@
 import React from 'react'
 
-export default function Loader() {
+export default function LoaderModal() {
     return (
         <>
             <div role="status" className='mt-3'>
