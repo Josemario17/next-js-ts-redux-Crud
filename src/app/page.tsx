@@ -1,14 +1,15 @@
 "use client";
 
 import AddButton from "@/Components/AddButton";
-import ModalCreate from "@/Components/ModalCreate";
 import TableList from "@/Components/Table";
 import SearchBar from "@/Components/SearchBar";
-import ModalEdit from "@/Components/ModalEdit";
 import ModalConfirm from "@/Components/ModalConfirm";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "@/Store/store";
 import { openCreateModal } from "../Store/ModalSlice";
+import Modal from "@/Components/Modal";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function Home() {
   const dispatch = useDispatch();
@@ -18,6 +19,7 @@ export default function Home() {
 
   return (
     <>
+    <ToastContainer></ToastContainer>
       <div className="px-4 mx-auto h-screen w-screen max-w-7xl">
         <div className="bg-gray-800 relative shadow-md sm:rounded-lg overflow-hidden">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between space-y-3 md:space-y-0 md:space-x-4 p-4">
@@ -70,8 +72,8 @@ export default function Home() {
           </div>
         </section>
 
-        {createModal && <ModalCreate />}
-        {editModal && <ModalEdit />}
+        {createModal && <Modal modalType="create" /> }
+        {editModal && <Modal modalType="edit"/>}
         {confirmModal && <ModalConfirm />}
       </div>
     </>
