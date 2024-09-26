@@ -1,6 +1,6 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { closeCreateModal, closeEditModal } from '@/Store/ModalSlice';
+import { closeCreateModal, closeEditModal, updateTable } from '@/Store/ModalSlice';
 import { RootState } from '@/Store/store';
 import Form from './Form';
 
@@ -20,8 +20,10 @@ export default function Modal({ modalType }: ModalProps) {
   const closeModal = () => {
     if (modalType === 'create') {
       dispatch(closeCreateModal());
+      dispatch(updateTable())
     } else if (modalType === 'edit') {
       dispatch(closeEditModal());
+      dispatch(updateTable())
     }
   };
 

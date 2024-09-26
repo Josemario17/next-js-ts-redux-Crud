@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useDispatch, useSelector } from 'react-redux'
-import { closeCreateModal, resetFormData, updateFormData } from '../Store/ModalSlice' 
+import { closeCreateModal, closeEditModal, resetFormData, updateFormData, updateTable } from '../Store/ModalSlice' 
 import AddButton from './AddButton'
 import { database } from '@/Services/Firebase'
 import { RootState } from '../Store/store' 
@@ -9,6 +9,7 @@ import { toast } from 'react-toastify'
 import LoaderModal from './LoaderModal'
 
 interface FormData {
+  key: string
   name: string
   email: string
   cargo: string
@@ -21,6 +22,7 @@ export default function Form({ SectionName }: { SectionName: string }) {
 
 
   const formData = useSelector((state: RootState) => state.modal.formData)
+  const UserInStage = useSelector((state: RootState) => state.modal.UserInStage)
 
   useEffect(() => {
     if (formData) {
@@ -33,38 +35,40 @@ export default function Form({ SectionName }: { SectionName: string }) {
   
   const cadastrarUsuario = (ref: any, data: FormData) => {
     setLoading(true)
-    return ref.push(data).then(() => {
-      toast.success('Usuário Cadastrado');
-      setLoading(!loading)
-    });
+    const newUserRef = ref.push(); 
+    const idNew = newUserRef.key; 
+    const dataWithKey = { ...data, key: idNew };
+    return newUserRef.set(dataWithKey).then(() => {
+    toast.success('Usuário Cadastrado');
+    setLoading(false);
+    dispatch(closeCreateModal());
+    dispatch(updateTable())
+  }).catch((error: Error) => {
+    toast.error('Erro ao cadastrar usuário: ' + error.message);
+    setLoading(false);
+  });
   };
   
-  const editarUsuario = (ref: any, data: FormData, email: string) => {
+  const editarUsuario = (ref: any, data: FormData) => {
     setLoading(true)
-    return ref.child(email).set(data).then(() => {
-      toast.success('Usuário Editado');
-      setLoading(!loading)
-    });
   };
 
   const gravar = (data: FormData, formData: FormData | null) => {
     const ref = database.ref('usuarios');
     
     if (formData) {
-      return editarUsuario(ref, data, formData.email);
+      dispatch(closeEditModal());
+      return editarUsuario(UserInStage, data);
     } else {
       return cadastrarUsuario(ref, data);
     }
   };
   
-  const onSubmit = (data: FormData) => {
+  const onSubmit = (data: FormData) => {  
     dispatch(updateFormData(data));
-    console.log('Dados do formulário enviados:', data);
-  
     gravar(data, formData) 
       .then(() => {
         dispatch(resetFormData());
-        dispatch(closeCreateModal());
       })
       .catch((error : Error) => {
         toast.error('Erro ao cadastrar/editar usuário: ' + error.message);

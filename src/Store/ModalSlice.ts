@@ -6,13 +6,15 @@ interface ModalState {
   editModal: boolean;
   confirmModal: boolean;
   formData: {
+    key: string,
     name: string;
     email: string;
     cargo: string;
   } | null;
   loading: boolean; 
   userData: any[]; 
-  updateTable: boolean
+  updateTable: boolean,
+  UserInStage: string;
 }
 
 const initialState: ModalState = {
@@ -22,7 +24,8 @@ const initialState: ModalState = {
   formData: null,
   loading: false, 
   userData: [], 
-  updateTable: false
+  updateTable: false,
+  UserInStage: "",
 };
 
 
@@ -30,7 +33,6 @@ function gravar(formData: { name: string; email: string; cargo: string }) {
   const ref = database.ref('usuarios');
   ref.push(formData); 
 }
-
 
 const modalSlice = createSlice({
   name: 'modal',
@@ -41,23 +43,20 @@ const modalSlice = createSlice({
     },
     closeCreateModal: (state) => {
       state.createModal = false;
-      state.updateTable = !state.updateTable;
     },
     openEditModal: (state) => {
       state.editModal = true;
     },
     closeEditModal: (state) => {
       state.editModal = false;
-      state.updateTable = !state.updateTable;
     },
     openConfirmModal: (state) => {
       state.confirmModal = true;
     },
     closeConfirmModal: (state) => {
       state.confirmModal = false;
-      state.updateTable = !state.updateTable;
     },
-    updateFormData: (state, action: PayloadAction<{ name: string; email: string; cargo: string }>) => {
+    updateFormData: (state, action: PayloadAction<{ key: string; name: string; email: string; cargo: string }>) => {
       state.formData = action.payload;
     },
     resetFormData(state) {
@@ -69,6 +68,12 @@ const modalSlice = createSlice({
         state.formData = null; 
       }
     },
+    AddUserInStage: (state, action: PayloadAction<{ userKey: string }>) => {
+      state.UserInStage = action.payload.userKey;
+    },
+    updateTable: (state) =>{
+      state.updateTable = (!state.updateTable)
+    }
   },
 });
 
@@ -82,6 +87,8 @@ export const {
   updateFormData,
   submitForm, 
   resetFormData,
+  AddUserInStage,
+  updateTable
 } = modalSlice.actions;
 
 export default modalSlice.reducer;

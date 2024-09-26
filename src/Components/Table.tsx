@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { openEditModal, openConfirmModal } from '../Store/ModalSlice';
+import { openEditModal, openConfirmModal, updateFormData, AddUserInStage, closeConfirmModal, openCreateModal } from '../Store/ModalSlice';
 import { setUsers } from '../Store/UserSlice';
 import Navegation from './Navegation';
 import LoaderTable from './LoaderTable';
 import { RootState } from '@/Store/store';
+import SearchBar from './SearchBar'; 
+import AddButton from './AddButton';
 
 interface User {
     key: string;
@@ -16,11 +18,12 @@ interface User {
 export default function TableList() {
     const dispatch = useDispatch();
     const users = useSelector((state: any) => state.users);
-    const [loading, setLoading] = useState<boolean>(false)
-    const updateTable = useSelector((state: RootState) => state.modal.updateTable)
+    const [loading, setLoading] = useState<boolean>(false);
+    const [searchTerm, setSearchTerm] = useState<string>(''); 
+    const updateTable = useSelector((state: RootState) => state.modal.updateTable);
 
     useEffect(() => {
-        setLoading(true)
+        setLoading(true);
         async function fetchData() {
             try {
                 const response = await fetch('https://thirdheart-b1751-default-rtdb.firebaseio.com/usuarios.json');
@@ -34,22 +37,45 @@ export default function TableList() {
                     }));
                     dispatch(setUsers(usersArray));
                 } else {
-                    console.error('null.');
+                    dispatch(setUsers([])); 
                 }
             } catch (error) {
                 console.error('Erro:', error);
-            }finally {
-                setLoading(false); 
+            } finally {
+                setLoading(false);
             }
         }
-        fetchData()
-    }, [dispatch, updateTable]);
+        fetchData();
+    }, [dispatch, updateTable, closeConfirmModal]);
+
+    // Filter users based on search term
+    const filteredUsers = users.filter((user: User) =>
+        user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        user.cargo.toLowerCase().includes(searchTerm.toLowerCase())
+    );
 
     return (
-        <>
+        <><section className="bg-gray-900 p-3 sm:p-5 antialiased">
+        <div className="mx-auto max-w-screen-xl px-4 lg:px-12">
+          <div className="bg-gray-800 relative shadow-md sm:rounded-lg overflow-hidden">
+            <div className="flex flex-col md:flex-row items-center justify-between space-y-3 md:space-y-0 md:space-x-4 p-4">
+              <div className="w-full md:w-1/2">
+              <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
+              </div>
+              <div className="w-full md:w-auto flex flex-col md:flex-row space-y-2 md:space-y-0 items-stretch md:items-center justify-end md:space-x-3 flex-shrink-0">
+                <AddButton
+                  text="Adicionar Usuario"
+                  typeButton="button"
+                  handleClick={() => { dispatch(openCreateModal()) }}
+                ></AddButton>
+              </div>
+            </div>
             <div className="overflow-x-auto">
                 {
-                    loading ? <LoaderTable></LoaderTable> : 
+                    loading ? <LoaderTable /> : 
+                    <>
+                    { filteredUsers.length === 0 ? <p className='w-full text-center'>Não há usuarios</p> :
                     <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
                         <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                             <tr>
@@ -62,14 +88,22 @@ export default function TableList() {
                             </tr>
                         </thead>
                         <tbody>
-                            {users.map((usuario: User, index: number) => (
-                                <tr key={index} id={usuario.key} className="border-b dark:border-gray-700">
+                            {filteredUsers.map((usuario: User, index: number) => (
+                                <tr key={index} className="border-b dark:border-gray-700">
                                     <td className="px-4 py-3 text-white">{usuario.name}</td>
                                     <td className="px-4 py-3 text-white">{usuario.email}</td>
                                     <td scope="row" className="px-4 py-3 font-medium whitespace-nowrap text-white">{usuario.cargo}</td>
                                     <td className="px-4 py-3 flex items-center justify-end">
                                         <button
-                                            onClick={() => dispatch(openEditModal())}
+                                            onClick={() => {
+                                                dispatch(updateFormData({
+                                                    key: usuario.key,
+                                                    name: usuario.name,
+                                                    email: usuario.email,
+                                                    cargo: usuario.cargo,
+                                                }));
+                                                dispatch(openEditModal());
+                                            }}
                                             type="button"
                                             className="flex w-full items-center py-2 px-4 group duration-300"
                                         >
@@ -78,7 +112,9 @@ export default function TableList() {
                                             </svg>
                                         </button>
                                         <button
-                                            onClick={() => dispatch(openConfirmModal())}
+                                            onClick={() =>{ 
+                                                dispatch(AddUserInStage({ userKey: usuario.key}));
+                                                dispatch(openConfirmModal())}}
                                             type="button"
                                             className="flex w-full items-center py-2 px-4 text-red-500 group duration-300"
                                         >
@@ -90,10 +126,14 @@ export default function TableList() {
                                 </tr>
                             ))}
                         </tbody>
-                    </table>
+                    </table> }
+                    </>
                 }
             </div>
             <Navegation />
+            </div>
+          </div>
+        </section>
         </>
     );
 }
