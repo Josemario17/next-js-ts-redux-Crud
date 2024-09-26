@@ -76,7 +76,7 @@ const modalSlice = createSlice({
       state.UserInStage = action.payload.userKey;
     },
     updateTable: (state) =>{
-      state.updateTable = (!state.updateTable)
+      state.updateTable = !state.updateTable
     },
     nextStep: (state) =>{
       state.initial = state.initial + 5;

@@ -40,8 +40,8 @@ export default function Form({ SectionName }: { SectionName: string }) {
     const dataWithKey = { ...data, key: idNew };
     return newUserRef.set(dataWithKey).then(() => {
     toast.success('Usuário Cadastrado');
-    setLoading(false);
     dispatch(closeCreateModal());
+    setLoading(false);
     dispatch(updateTable())
   }).catch((error: Error) => {
     toast.error('Erro ao cadastrar usuário: ' + error.message);
@@ -51,24 +51,23 @@ export default function Form({ SectionName }: { SectionName: string }) {
   
   const editarUsuario = async (ref: string, data: FormData) => {
     setLoading(true);
-    try {
-      await database.ref("usuarios").child(ref).update(data)
-      toast.success('Usuário Editado')
-      setLoading(false)
-      dispatch(closeEditModal())
-      dispatch(updateTable())
-    } catch (error : any) {
-      toast.error('Erro ao editar usuário: ' + error.message)
-      setLoading(false)
-    }
-  };
+    database.ref("usuarios").child(ref).update(data).
+    then(()=>{
+        toast.success('Usuário Editado')
+        dispatch(closeEditModal())
+        setLoading(false)
+        dispatch(updateTable())
+      }).catch((error: Error) => {
+        toast.error('Erro ao Editar usuário: ' + error.message);
+        setLoading(false);
+      });
+  }
   
 
   const gravar = (data: FormData, formData: FormData | null) => {
     const ref = database.ref('usuarios');
-    
+  
     if (formData) {
-      dispatch(closeEditModal());
       return editarUsuario(UserInStage, data);
     } else {
       return cadastrarUsuario(ref, data);
@@ -78,12 +77,7 @@ export default function Form({ SectionName }: { SectionName: string }) {
   const onSubmit = (data: FormData) => {  
     dispatch(updateFormData(data));
     gravar(data, formData) 
-      .then(() => {
-        dispatch(resetFormData());
-      })
-      .catch((error : Error) => {
-        toast.error('Erro ao cadastrar/editar usuário: ' + error.message);
-      });
+    dispatch(resetFormData());
   };
 
   return (

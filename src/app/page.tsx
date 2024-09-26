@@ -18,8 +18,6 @@ export default function Home() {
   );
 
   const users = useSelector((state: any) => state.users);
-
-
   return (
     <>
     <ToastContainer></ToastContainer>

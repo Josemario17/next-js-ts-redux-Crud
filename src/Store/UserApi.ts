@@ -1,4 +1,3 @@
-// Store/api.ts
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
 interface User {
@@ -8,17 +7,16 @@ interface User {
     cargo: string;
 }
 
-export const usersApi = createApi({
-    reducerPath: 'api',
+export const userApi = createApi({
+    reducerPath: 'userApi',
     baseQuery: fetchBaseQuery({ baseUrl: 'https://thirdheart-b1751-default-rtdb.firebaseio.com/' }),
     endpoints: (builder) => ({
-        getUsers: builder.query<User[], void>({
-            query: () => 'usuarios.json',
-            transformResponse: (response: Record<string, User>) => {
-                return response ? Object.values(response) : [];
-            },
-        }),
+      getUsers: builder.query<User[], void>({
+        query: () => 'usuarios.json',
+        transformResponse: (response: Record<string, User>) => 
+          response ? Object.values(response) : [],
+      }),
     }),
-});
-
-export const { useGetUsersQuery } = usersApi;
+  });
+  
+  export const { useGetUsersQuery } = userApi;
