@@ -1,18 +1,14 @@
 "use client";
 
-import AddButton from "@/Components/AddButton";
 import TableList from "@/Components/Table";
-import SearchBar from "@/Components/SearchBar";
 import ModalConfirm from "@/Components/ModalConfirm";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import { RootState } from "@/Store/store";
-import { openCreateModal } from "../Store/ModalSlice";
 import Modal from "@/Components/Modal";
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 export default function Home() {
-  const dispatch = useDispatch();
   const { createModal, editModal, confirmModal } = useSelector(
     (state: RootState) => state.modal
   );
