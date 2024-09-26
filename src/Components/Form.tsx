@@ -33,7 +33,7 @@ export default function Form({ SectionName }: { SectionName: string }) {
   }, [formData, setValue])
 
   
-  const cadastrarUsuario = (ref: any, data: FormData) => {
+  const cadastrarUsuario = (ref: any, data: FormData ) => {
     setLoading(true)
     const newUserRef = ref.push(); 
     const idNew = newUserRef.key; 
