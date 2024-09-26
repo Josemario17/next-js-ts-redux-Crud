@@ -2,19 +2,21 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { database } from '@/Services/Firebase';
 
 interface ModalState {
-  createModal: boolean;
-  editModal: boolean;
-  confirmModal: boolean;
+  createModal: boolean,
+  editModal: boolean,
+  confirmModal: boolean,
   formData: {
     key: string,
-    name: string;
-    email: string;
-    cargo: string;
-  } | null;
-  loading: boolean; 
-  userData: any[]; 
-  updateTable: boolean,
-  UserInStage: string;
+    name: string,
+    email: string,
+    cargo: string,
+  } | null,
+  loading: boolean, 
+  userData: any[], 
+  updateTable: boolean
+  UserInStage: string,
+  initial: number,
+  step: number,
 }
 
 const initialState: ModalState = {
@@ -26,6 +28,8 @@ const initialState: ModalState = {
   userData: [], 
   updateTable: false,
   UserInStage: "",
+  initial: 0,
+  step: 5,
 };
 
 
@@ -73,6 +77,14 @@ const modalSlice = createSlice({
     },
     updateTable: (state) =>{
       state.updateTable = (!state.updateTable)
+    },
+    nextStep: (state) =>{
+      state.initial = state.initial + 5;
+      state.step = state.step + 5
+    },
+    backStep: (state) =>{
+      state.initial != 0 ? state.initial = state.initial - 5  : state.initial;
+      state.step != 5 ? state.step = state.step - 5  : state.step;
     }
   },
 });
@@ -88,7 +100,9 @@ export const {
   submitForm, 
   resetFormData,
   AddUserInStage,
-  updateTable
+  updateTable,
+  nextStep,
+  backStep
 } = modalSlice.actions;
 
 export default modalSlice.reducer;

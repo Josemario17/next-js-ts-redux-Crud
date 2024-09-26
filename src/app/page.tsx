@@ -23,7 +23,7 @@ export default function Home() {
   return (
     <>
     <ToastContainer></ToastContainer>
-      <div className="px-4 mx-auto w-screen max-w-7xl mt-24">
+      <div className="px-4 mx-auto w-screen max-w-7xl mt-10">
         <div className="bg-gray-800 relative shadow-md sm:rounded-lg overflow-hidden">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between space-y-3 md:space-y-0 md:space-x-4 p-4">
             <div className="flex-1">

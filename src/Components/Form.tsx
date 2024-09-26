@@ -49,9 +49,20 @@ export default function Form({ SectionName }: { SectionName: string }) {
   });
   };
   
-  const editarUsuario = (ref: any, data: FormData) => {
-    setLoading(true)
+  const editarUsuario = async (ref: string, data: FormData) => {
+    setLoading(true);
+    try {
+      await database.ref("usuarios").child(ref).update(data)
+      toast.success('Usuário Editado')
+      setLoading(false)
+      dispatch(closeEditModal())
+      dispatch(updateTable())
+    } catch (error : any) {
+      toast.error('Erro ao editar usuário: ' + error.message)
+      setLoading(false)
+    }
   };
+  
 
   const gravar = (data: FormData, formData: FormData | null) => {
     const ref = database.ref('usuarios');
